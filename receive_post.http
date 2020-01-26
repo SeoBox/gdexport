@@ -1,0 +1,11 @@
+POST http://localhost:80/wp-admin/admin-ajax.php?action=gdsync_post
+Content-Type: application/json
+X-GDSync-Signature: algo=
+
+{
+  "type": "post",
+  "content": "content",
+  "title": "title"
+}
+
+###

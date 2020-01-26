@@ -1,2 +1,2 @@
-# gdpress
-Google Docs to Wordpress Sync
+#GDSync
+Google Docs to Wordpress Export
