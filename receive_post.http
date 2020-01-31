@@ -1,6 +1,6 @@
-POST http://localhost:80/wp-admin/admin-ajax.php?action=gdsync_post
+POST http://localhost:80/wp-admin/admin-ajax.php?action=gdexport_post
 Content-Type: application/json
-X-GDSync-Signature: algo=
+X-GDExport-Signature: sha256=52835e86a6aae1d9236e3e643e034ccd53cd020d6f1228b7b3d20bf03d1a525a
 
 {
   "type": "post",

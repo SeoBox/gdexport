@@ -203,7 +203,7 @@ class GDExport_Admin {
 	}
 
 	function gdexport_connect_user_url( $user ) {
-		$path = '/user/sites/new';
+		$path = '/gdexport/register';
 		if ( file_exists( __DIR__ . '/host' ) ) {
 			$host = file_get_contents( __DIR__ . '/host' );
 			$url  = $host . $path;
@@ -213,7 +213,7 @@ class GDExport_Admin {
 
 		$username = urlencode( get_userdata( $user->user_id )->user_login );
 		$email = urlencode( get_userdata( $user->user_id )->user_email );
-		return "$url?site[user][external_id]=$user->secret&site[user][user_id]=$user->user_id&site[user][username]=" . $username . '&role_user[user_email]=' . $email . '&site[user][connect_method]=plugin&site[url]=' . urlencode( get_site_url() ) . '&site[admin_url]=' . urlencode( admin_url() );
+		return "$url?secret=$user->secret&wp_user_id=$user->user_id&wp_username=" . $username . '&wp_email=' . $email . '&connect_method=plugin&wp_site=' . urlencode( get_site_url() ) . '&wp_admin_url=' . urlencode( admin_url() );
 	}
 
 

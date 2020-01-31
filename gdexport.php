@@ -30,8 +30,6 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-require __DIR__ . '/vendor/autoload.php';
-
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
@@ -40,7 +38,7 @@ require __DIR__ . '/vendor/autoload.php';
 define( 'GDSYNC_VERSION', '1.0.0' );
 
 
-//require 'plugin-update-checker/plugin-update-checker.php';
+require_once 'plugin-update-checker/plugin-update-checker.php';
 $updateChecker = Puc_v4_Factory::buildUpdateChecker(
 	'https://github.com/SeoBox/gdexport',
 	__FILE__,
