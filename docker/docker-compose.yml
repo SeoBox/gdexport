@@ -7,7 +7,7 @@ services:
       - ${IP}:80:80 # change ip if required
     volumes:
       - ./wordpress:/var/www/html # Full wordpress project
-      - ../:/var/www/html/wp-content/plugins/gdsync # Plugin development
+      - ../:/var/www/html/wp-content/plugins/gdexport # Plugin development
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: "${DB_NAME}"

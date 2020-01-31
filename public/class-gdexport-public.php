@@ -135,14 +135,14 @@ class GDExport_Public {
 			$error_string = $attachment_id->get_error_message();
 			echo "{\"error\" : \"" . $error_string . "\"}";
 		} else {
-			echo "{\"version\" : \"" . GDSYNC_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . wp_get_attachment_url( $attachment_id ) . "\", \"id\" : \"" . $attachment_id . "\"}";
+			echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . wp_get_attachment_url( $attachment_id ) . "\", \"id\" : \"" . $attachment_id . "\"}";
 		}
 		wp_die();
 	}
 
 	function gdexport_version() {
 		$wp_version = get_bloginfo( 'version' );
-		echo "{\"version\" : \"" . GDSYNC_VERSION . "\", \"wordpress_version\" : \"" . $wp_version . "\"}";
+		echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . $wp_version . "\"}";
 
 		wp_die();
 	}
@@ -150,11 +150,11 @@ class GDExport_Public {
 	function gdexport_compare_keys() {
 		global $wpdb;
 
-		if ( ! isset( $_SERVER['HTTP_X_GDSYNC_SIGNATURE'] ) ) {
+		if ( ! isset( $_SERVER['HTTP_X_GDEXPORT_SIGNATURE'] ) ) {
 			wp_die( "{\"error\": \"HTTP header 'X-GDExport-Signature' is missing.\"}" );
 		}
 
-		list( $algo, $hash ) = explode( '=', $_SERVER['HTTP_X_GDSYNC_SIGNATURE'], 2 ) + array( '', '' );
+		list( $algo, $hash ) = explode( '=', $_SERVER['HTTP_X_GDEXPORT_SIGNATURE'], 2 ) + array( '', '' );
 		$raw_post = file_get_contents( 'php://input' );
 		if ( strlen( $raw_post ) == 0 ) {
 			$raw_post = file_get_contents( $_FILES['file']['tmp_name'] );
@@ -200,7 +200,7 @@ class GDExport_Public {
 			$error_string = $id->get_error_message();
 			echo "{\"error\" : \"" . $error_string . "\"}";
 		} else {
-			echo "{\"version\" : \"" . GDSYNC_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . get_edit_post_link( $id ) . "\"}";
+			echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . get_edit_post_link( $id ) . "\"}";
 		}
 	}
 
@@ -211,7 +211,7 @@ class GDExport_Public {
 		if ( ! empty( $real_title ) && ( $final == 'final' ) ) {
 			$this->gdexport_aggregate_post( $unique_identifier, $num, $real_title, $post );
 		} else {
-			echo "{\"version\" : \"" . GDSYNC_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . get_edit_post_link( $post_id ) . "\"}";
+			echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . get_edit_post_link( $post_id ) . "\"}";
 		}
 	}
 
