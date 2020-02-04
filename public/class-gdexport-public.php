@@ -3,9 +3,6 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       http://seobox.io
- * @since      1.0.0
- *
  * @package    GDExport
  * @subpackage GDExport/public
  */
@@ -141,8 +138,8 @@ class GDExport_Public {
 	}
 
 	function gdexport_version() {
-		$wp_version = get_bloginfo( 'version' );
-		echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . $wp_version . "\"}";
+		$wordpress_version = get_bloginfo( 'version' );
+		echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . $wordpress_version . "\"}";
 
 		wp_die();
 	}
@@ -195,13 +192,21 @@ class GDExport_Public {
 		);
 		$final_content = null;
 
+
 		$id = wp_insert_post( $post, true );
 		if ( is_wp_error( $id ) ) {
 			$error_string = $id->get_error_message();
-			echo "{\"error\" : \"" . $error_string . "\"}";
+			$result       = array( "error" => $error_string );
 		} else {
-			echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . get_edit_post_link( $id ) . "\"}";
+			$result = array(
+				"version" => GDEXPORT_VERSION,
+				"wordpress_version"     => get_bloginfo( 'version' ),
+				'url'            => get_edit_post_link( $id ),
+				'id'             => $id
+			);
 		}
+
+		echo json_encode($result);
 	}
 
 	function gdexport_segmented_post_hook( $post_id ) {
@@ -211,7 +216,12 @@ class GDExport_Public {
 		if ( ! empty( $real_title ) && ( $final == 'final' ) ) {
 			$this->gdexport_aggregate_post( $unique_identifier, $num, $real_title, $post );
 		} else {
-			echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . get_edit_post_link( $post_id ) . "\"}";
+			echo json_encode( array(
+				"version" => GDEXPORT_VERSION,
+				"wordpress_version"     => get_bloginfo( 'version' ),
+				'url'            => get_edit_post_link( $post_id ),
+				'id'             => $post_id
+			) );
 		}
 	}
 
