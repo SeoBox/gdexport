@@ -41,7 +41,7 @@ class GDExport_Public {
 	 * Initialize the class and set its properties.
 	 *
 	 * @param string $plugin_name The name of the plugin.
-	 * @param string $version     The version of this plugin.
+	 * @param string $version The version of this plugin.
 	 *
 	 * @since    1.0.0
 	 */
@@ -99,8 +99,7 @@ class GDExport_Public {
 	}
 
 	function gdexport_receive_post() {
-		$user_id = $this->gdexport_compare_keys();
-		wp_set_current_user( $user_id );
+		$this->set_current_user();
 
 		$post_data = json_decode( file_get_contents( 'php://input' ), true );
 		$post      = array(
@@ -122,8 +121,7 @@ class GDExport_Public {
 	}
 
 	function gdexport_receive_image() {
-		$user_id = $this->gdexport_compare_keys();
-		wp_set_current_user( $user_id );
+		$this->set_current_user();
 
 		$upload_overrides = array( 'test_form' => false );
 		$attachment_id    = media_handle_upload( 'file', 0, array(), $upload_overrides );
@@ -137,6 +135,27 @@ class GDExport_Public {
 		wp_die();
 	}
 
+	function gdexport_set_featured_image() {
+		$this->set_current_user();
+
+		$post_data    = json_decode( file_get_contents( 'php://input' ), true );
+		$thumbnail_id = $post_data['thumbnail_id'];
+		$post_id      = $post_data['post_id'];
+
+		// if there is already a thumbnail, set_post_thumbnail returns false
+		delete_post_thumbnail($post_id);
+		if ( set_post_thumbnail( $post_id, $thumbnail_id ) ) {
+			$result = array(
+				"version"           => GDEXPORT_VERSION,
+				"wordpress_version" => get_bloginfo( 'version' )
+			);
+		} else {
+			$result = array( "error" => "Unable to set a featured image" );
+		}
+		echo json_encode( $result );
+		wp_die();
+	}
+
 	function gdexport_version() {
 		$wordpress_version = get_bloginfo( 'version' );
 		echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . $wordpress_version . "\"}";
@@ -144,7 +163,7 @@ class GDExport_Public {
 		wp_die();
 	}
 
-	function gdexport_compare_keys() {
+	function set_current_user() {
 		global $wpdb;
 
 		if ( ! isset( $_SERVER['HTTP_X_GDEXPORT_SIGNATURE'] ) ) {
@@ -168,6 +187,8 @@ class GDExport_Public {
 			}
 		}
 		if ( $match ) {
+			wp_set_current_user( $match );
+
 			return $match;
 		} else {
 			wp_die( '{"error": "Secret hash does not match."}' );
@@ -195,18 +216,17 @@ class GDExport_Public {
 
 		$id = wp_insert_post( $post, true );
 		if ( is_wp_error( $id ) ) {
-			$error_string = $id->get_error_message();
-			$result       = array( "error" => $error_string );
+			$result       = array( "error" => $id->get_error_message() );
 		} else {
 			$result = array(
-				"version" => GDEXPORT_VERSION,
-				"wordpress_version"     => get_bloginfo( 'version' ),
-				'url'            => get_edit_post_link( $id ),
-				'id'             => $id
+				"version"           => GDEXPORT_VERSION,
+				"wordpress_version" => get_bloginfo( 'version' ),
+				'url'               => get_edit_post_link( $id ),
+				'id'                => $id
 			);
 		}
 
-		echo json_encode($result);
+		echo json_encode( $result );
 	}
 
 	function gdexport_segmented_post_hook( $post_id ) {
@@ -217,10 +237,10 @@ class GDExport_Public {
 			$this->gdexport_aggregate_post( $unique_identifier, $num, $real_title, $post );
 		} else {
 			echo json_encode( array(
-				"version" => GDEXPORT_VERSION,
-				"wordpress_version"     => get_bloginfo( 'version' ),
-				'url'            => get_edit_post_link( $post_id ),
-				'id'             => $post_id
+				"version"           => GDEXPORT_VERSION,
+				"wordpress_version" => get_bloginfo( 'version' ),
+				'url'               => get_edit_post_link( $post_id ),
+				'id'                => $post_id
 			) );
 		}
 	}

@@ -178,6 +178,7 @@ class GDExport {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'wp_ajax_nopriv_gdexport_post', $plugin_public, 'gdexport_receive_post' );
 		$this->loader->add_action( 'wp_ajax_nopriv_gdexport_image', $plugin_public, 'gdexport_receive_image' );
+		$this->loader->add_action( 'wp_ajax_nopriv_gdexport_featured_image', $plugin_public, 'gdexport_set_featured_image' );
 		$this->loader->add_action( 'wp_ajax_nopriv_gdexport_version', $plugin_public, 'gdexport_version' );
 
 

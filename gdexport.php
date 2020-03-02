@@ -8,11 +8,10 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @wordpress-plugin
  * Plugin Name:       GDExport
  * Plugin URI:        http://seobox.io/GDExport
  * Description:       Export Google Docs into Wordpress as posts and pages
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            SEOBox
  * Author URI:        http://seobox.io
  * License:           GPL-2.0+
@@ -26,12 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'GDEXPORT_VERSION', '1.0.2' );
+define( 'GDEXPORT_VERSION', '1.0.3' );
 
 
 require_once 'plugin-update-checker/plugin-update-checker.php';
