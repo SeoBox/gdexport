@@ -11,7 +11,7 @@
  * Plugin Name:       GDExport
  * Plugin URI:        http://seobox.io/GDExport
  * Description:       Export Google Docs into Wordpress as posts and pages
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            SEOBox
  * Author URI:        http://seobox.io
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'GDEXPORT_VERSION', '1.0.3' );
+define( 'GDEXPORT_VERSION', '1.0.4' );
 
 
 require_once 'plugin-update-checker/plugin-update-checker.php';

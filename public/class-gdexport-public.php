@@ -98,6 +98,25 @@ class GDExport_Public {
 
 	}
 
+	function encode_result( $result = array(), $die = true ) {
+		$result = array_merge( $result, array(
+			"version"           => GDEXPORT_VERSION,
+			"wordpress_version" => get_bloginfo( 'version' ),
+		) );
+
+		$error = $result['error_object'];
+		if (isset($error) && is_wp_error( $error )) {
+			$result['error'] = $error->get_error_message();
+			unset($result['error_object']);
+		}
+
+		echo json_encode( $result );
+
+		if ( $die ) {
+			wp_die();
+		}
+	}
+
 	function gdexport_receive_post() {
 		$this->set_current_user();
 
@@ -112,8 +131,7 @@ class GDExport_Public {
 		$id = wp_insert_post( $post, true );
 
 		if ( is_wp_error( $id ) ) {
-			$error_string = $id->get_error_message();
-			echo "{\"error\" : \"" . $error_string . "\"}";
+			$this->encode_result( array( "error" => $id->get_error_message() ) );
 		} else {
 			$this->gdexport_segmented_post_hook( $id );
 		}
@@ -126,13 +144,11 @@ class GDExport_Public {
 		$upload_overrides = array( 'test_form' => false );
 		$attachment_id    = media_handle_upload( 'file', 0, array(), $upload_overrides );
 
-		if ( is_wp_error( $attachment_id ) ) {
-			$error_string = $attachment_id->get_error_message();
-			echo "{\"error\" : \"" . $error_string . "\"}";
-		} else {
-			echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . get_bloginfo( 'version' ) . "\", \"url\" : \"" . wp_get_attachment_url( $attachment_id ) . "\", \"id\" : \"" . $attachment_id . "\"}";
-		}
-		wp_die();
+		$this->encode_result( array(
+			'url'   => wp_get_attachment_url( $attachment_id ),
+			'id'    => $attachment_id,
+			'error_object' => $attachment_id
+		) );
 	}
 
 	function gdexport_set_featured_image() {
@@ -142,25 +158,18 @@ class GDExport_Public {
 		$thumbnail_id = $post_data['thumbnail_id'];
 		$post_id      = $post_data['post_id'];
 
+		$result = array();
 		// if there is already a thumbnail, set_post_thumbnail returns false
-		delete_post_thumbnail($post_id);
-		if ( set_post_thumbnail( $post_id, $thumbnail_id ) ) {
-			$result = array(
-				"version"           => GDEXPORT_VERSION,
-				"wordpress_version" => get_bloginfo( 'version' )
-			);
-		} else {
+		delete_post_thumbnail( $post_id );
+		if ( ! set_post_thumbnail( $post_id, $thumbnail_id ) ) {
 			$result = array( "error" => "Unable to set a featured image" );
 		}
-		echo json_encode( $result );
-		wp_die();
+
+		$this->encode_result( $result );
 	}
 
 	function gdexport_version() {
-		$wordpress_version = get_bloginfo( 'version' );
-		echo "{\"version\" : \"" . GDEXPORT_VERSION . "\", \"wordpress_version\" : \"" . $wordpress_version . "\"}";
-
-		wp_die();
+		$this->encode_result();
 	}
 
 	function set_current_user() {
@@ -214,19 +223,14 @@ class GDExport_Public {
 		$final_content = null;
 
 
-		$id = wp_insert_post( $post, true );
-		if ( is_wp_error( $id ) ) {
-			$result       = array( "error" => $id->get_error_message() );
-		} else {
-			$result = array(
-				"version"           => GDEXPORT_VERSION,
-				"wordpress_version" => get_bloginfo( 'version' ),
-				'url'               => get_edit_post_link( $id ),
-				'id'                => $id
-			);
-		}
+		$id     = wp_insert_post( $post, true );
+		$result = array(
+			'url'   => get_edit_post_link( $id ),
+			'id'    => $id,
+			"error_object" => $id
+		);
 
-		echo json_encode( $result );
+		$this->encode_result( $result, $die = false );
 	}
 
 	function gdexport_segmented_post_hook( $post_id ) {
@@ -236,12 +240,10 @@ class GDExport_Public {
 		if ( ! empty( $real_title ) && ( $final == 'final' ) ) {
 			$this->gdexport_aggregate_post( $unique_identifier, $num, $real_title, $post );
 		} else {
-			echo json_encode( array(
-				"version"           => GDEXPORT_VERSION,
-				"wordpress_version" => get_bloginfo( 'version' ),
-				'url'               => get_edit_post_link( $post_id ),
-				'id'                => $post_id
-			) );
+			$this->encode_result( array(
+				'url' => get_edit_post_link( $post_id ),
+				'id'  => $post_id
+			), $die = false );
 		}
 	}
 
