@@ -27,17 +27,6 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( 'GDEXPORT_VERSION', '1.0.4' );
 
-
-require_once 'plugin-update-checker/plugin-update-checker.php';
-$updateChecker = Puc_v4_Factory::buildUpdateChecker(
-	'https://github.com/SeoBox/gdexport',
-	__FILE__,
-	'gdexport'
-);
-
-$updateChecker->setBranch('master');
-
-
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-gdexport-activator.php
