@@ -9,7 +9,7 @@
  * that starts the plugin.
  *
  * Plugin Name:       GDExport
- * Plugin URI:        http://seobox.io/GDExport
+ * Plugin URI:        http://seobox.io/
  * Description:       Export Google Docs into Wordpress as posts and pages
  * Version:           1.0.4
  * Author:            SEOBox
