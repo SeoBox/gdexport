@@ -17,7 +17,6 @@
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       GDExport
- * Domain Path:       /languages
  */
 
 // If this file is called directly, abort.
@@ -31,7 +30,7 @@ define( 'GDEXPORT_VERSION', '1.0.4' );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-gdexport-activator.php
  */
-function activate_plugin_name() {
+function activate_gdexport() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gdexport-activator.php';
 	GDExport_Activator::activate();
 }
@@ -40,13 +39,13 @@ function activate_plugin_name() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-gdexport-deactivator.php
  */
-function deactivate_plugin_name() {
+function deactivate_gdexport() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gdexport-deactivator.php';
 	GDExport_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_plugin_name' );
-register_deactivation_hook( __FILE__, 'deactivate_plugin_name' );
+register_activation_hook( __FILE__, 'activate_gdexport' );
+register_deactivation_hook( __FILE__, 'deactivate_gdexport' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -62,10 +61,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-gdexport.php';
  * not affect the page life cycle.
  *
  */
-function run_plugin_name() {
+function run_gdexport() {
 
 	$plugin = new GDExport();
 	$plugin->run();
 
 }
-run_plugin_name();
+run_gdexport();
